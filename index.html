@@ -53,9 +53,7 @@
     <li>主打「驚喜或驚嚇」，收到什麼就是什麼！</li>
   </ol>
 </div>
-<div class="picker"><button id="rand">🎲 隨機產生顏色</button></div>
 <div id="list"></div>
-<button class="reset" id="reset">重置顏色</button>
 
 <script>
 const PAIRS = [
@@ -72,17 +70,9 @@ const COLORS = [
   ["豆沙色","#b98b82"],["霧霾藍","#7d93a8"],["燕麥色","#d9c9ae"],["灰綠色","#8a9a8b"],
   ["焦糖色","#b5753a"],["藕粉色","#e0c4c4"]
 ];
-const KEY = "giftColors";
-let state = JSON.parse(localStorage.getItem(KEY) || "{}"); // { 送禮者: 顏色索引 }
-
-function save() { localStorage.setItem(KEY, JSON.stringify(state)); }
-
-function drawAll() {
-  const pool = COLORS.map((_, i) => i).sort(() => Math.random() - 0.5);
-  state = {};
-  PAIRS.forEach(([giver], i) => { state[giver] = pool[i]; });
-  save(); render();
-}
+const FIXED = [26,8,15,19,25,20,9,13,17,0];
+const state = {};
+PAIRS.forEach(([giver], i) => { state[giver] = FIXED[i]; });
 
 function render() {
   const list = document.getElementById("list");
@@ -104,13 +94,8 @@ function render() {
     row.append(mk("who angel", `<span>👼 小天使</span><b>${giver}</b>`), mk("say", "請準備"), chip, mk("say", "禮物給"), mk("who owner", `<span>🏠 小主人</span><b>${target}</b>`));
     list.append(row);
   });
-  document.getElementById("rand").disabled = Object.keys(state).length > 0;
 }
 
-document.getElementById("rand").onclick = drawAll;
-document.getElementById("reset").onclick = () => {
-  if (confirm("確定要清空所有顏色？")) { state = {}; save(); render(); }
-};
 render();
 for (let i = 0; i < 30; i++) {
   const f = document.createElement("div");
